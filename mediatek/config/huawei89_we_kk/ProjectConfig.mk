@@ -122,7 +122,7 @@ CUSTOM_KERNEL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv s5k4e1ga_mipi_raw bf390
 CUSTOM_KERNEL_KPD=kpd
 
 # To choose kernel LCM driver name
-CUSTOM_KERNEL_LCM=otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
+CUSTOM_KERNEL_LCM=otm1282a_hd720_dsi_cmd
 
 # leds driver including green/red/blue
 CUSTOM_KERNEL_LEDS=mt65xx
@@ -176,10 +176,10 @@ CUSTOM_KERNEL_USB=mt6577
 CUSTOM_KERNEL_VIBRATOR=vibrator
 
 # To choose LK LCM driver name
-CUSTOM_LK_LCM=otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
+CUSTOM_LK_LCM=otm1282a_hd720_dsi_cmd
 
 # Define which modem will be used.
-CUSTOM_MODEM=huawei89_we_jb2_md1_hspa
+CUSTOM_MODEM=huawei89_cmcc_jb2_md2_tdd128hspa
 
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_AUTH_SUPPORT=no
@@ -188,7 +188,7 @@ CUSTOM_SEC_AUTH_SUPPORT=no
 CUSTOM_SEC_SIGNTOOL_SUPPORT=no
 
 # To choose uboot LCM driver name
-CUSTOM_UBOOT_LCM=otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
+CUSTOM_UBOOT_LCM=otm1282a_hd720_dsi_cmd
 
 # Add these variables to define the default input method and default input method languages.
 DEFAULT_INPUT_METHOD=com.android.inputmethod.latin.LatinIME
@@ -254,10 +254,10 @@ HUAWEI_FASTBOOT_SUPPORT=yes
 KBUILD_OUTPUT_SUPPORT=yes
 
 # To set LCM resolution height size
-LCM_HEIGHT=960
+LCM_HEIGHT=1280
 
 # To set LCM resolution width size
-LCM_WIDTH=540
+LCM_WIDTH=720
 
 LCM_FAKE_HEIGHT=0
 LCM_FAKE_WIDTH=0
@@ -692,8 +692,8 @@ MTK_EMULATOR_SUPPORT=no
 
 # MPEG4 ASP/ Divx/ Xvid decoder.
 MTK_ENABLE_DIVX_DECODER=yes
-MTK_ENABLE_MD1=yes
-MTK_ENABLE_MD2=no
+MTK_ENABLE_MD1=no
+MTK_ENABLE_MD2=yes
 MTK_ENABLE_MD5=no
 
 # Sorenson H.263.
