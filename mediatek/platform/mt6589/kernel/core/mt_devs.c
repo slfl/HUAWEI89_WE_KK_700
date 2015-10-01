@@ -67,7 +67,7 @@ static struct musb_hdrc_platform_data usb_data = {
 };
 struct platform_device mt_device_usb = {
 	.name		  = "mt_usb",
-	.id		  = -1,   //only one such device
+	.id		  = -1,
 	.dev = {
 		.platform_data          = &usb_data,
 		.dma_mask               = &usb_dmamask,
@@ -88,8 +88,8 @@ static struct musbfsh_hdrc_config musbfsh_config_mt65xx = {
 	.dyn_fifo       = true,
 	.soft_con       = true,
 	.dma            = true,
-	.num_eps        = 16,
-	.dma_channels   = 8,
+	.num_eps        = 6,
+	.dma_channels   = 4,
 };
 static struct musbfsh_hdrc_platform_data usb_data_mt65xx = {
 	.mode           = 1,
@@ -1487,10 +1487,10 @@ int HW_TP_Init(hw_product_type board_id)
 
     printk("-- HW_TP_Init Begin --\n");
 
-    if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
+    if((board_id & HW_VER_MAIN_MASK) == HW_G700_VER)
     {
-        cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
-        cyttsp4_register_core_device(&cyttsp4_G610_core_info);
+        cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
+        cyttsp4_register_core_device(&cyttsp4_G700_core_info);
     }
     else
     {
@@ -1913,24 +1913,21 @@ __init int mt6589_board_init(void)
 
 #if defined(HW_HAVE_TP_THREAD)
 #else
-/* Register core and devices */
 hw_product_type board_id;
 board_id=get_hardware_product_version();
-//cyttsp4_register_core_device(&cyttsp4_core_info);
-if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
+if((board_id & HW_VER_MAIN_MASK) == HW_G700_VER)
 	{
 	cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
-       cyttsp4_register_core_device(&cyttsp4_G700_core_info);
+	cyttsp4_register_core_device(&cyttsp4_G700_core_info);
 }
-else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
+else if((board_id & HW_VER_MAIN_MASK) == HW_G610_VER)
 	{
 	cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
-       cyttsp4_register_core_device(&cyttsp4_G610_core_info);
+	cyttsp4_register_core_device(&cyttsp4_G610_core_info);
 }
 else	{
 	printk("cyttsp4_register_device error\n");
 }
-
 cyttsp4_register_device(&cyttsp4_btn_info);
 #endif
 

@@ -213,12 +213,12 @@ static void set_app_info_battery_type(void)
 {
     const char* battery_id_string[BATT_ID_INVALID + 1] = {
         "BYD",
-        "GAGC",
+        "GY",
         "LiShen",
         "Reserved for Inland",
         "SONY",
-        "SDI",
-        "SANYO",
+        "Sunwoda",
+        "Scud",
         "Reserved for Oversea",
         "Invalid"
     };
