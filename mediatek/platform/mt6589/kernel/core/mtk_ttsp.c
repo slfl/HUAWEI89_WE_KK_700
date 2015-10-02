@@ -44,9 +44,13 @@
 //#define CONFIG_TOUCHSCREEN_CYPRESS_CYTTSP4_PLATFORM_FW_UPGRADE
 #define CONFIG_TOUCHSCREEN_CYPRESS_CYTTSP4_PLATFORM_TTCONFIG_UPGRADE 1
 
-
-extern int tpd_type_cap;
-extern int tpd_load_status;
+extern void mt65xx_eint_unmask(unsigned int line);
+extern void mt65xx_eint_mask(unsigned int line);
+extern void mt65xx_eint_set_hw_debounce(kal_uint8 eintno, kal_uint32 ms);
+extern kal_uint32 mt65xx_eint_set_sens(kal_uint8 eintno, kal_bool sens);
+extern void mt65xx_eint_registration(kal_uint8 eintno, kal_bool Dbounce_En,
+                                     kal_bool ACT_Polarity, void (EINT_FUNC_PTR)(void),
+                                     kal_bool auto_umask);
 
 #define CUST_EINT_TOUCH_PANEL_NUM              5
 //#define CUST_EINT_TOUCH_PANEL_NUM              79
@@ -61,7 +65,6 @@ extern int tpd_load_status;
 #define CUST_EINT_DEBOUNCE_ENABLE           1
 #define CUST_EINT_EDGE_SENSITIVE            0
 #define CUST_EINT_LEVEL_SENSITIVE           1
-//#define CUST_EINTF_TRIGGER_FALLING			2
 extern void printGPIO_Status(int gpioIdx);  // printGPIO_Status(GPIO9)
 
 // GPIO77 mode1:URXD1 mode2:EINT79
@@ -152,9 +155,23 @@ int cyttsp4_MTK_i2c_read(struct i2c_client *client, uint8_t *buf, int len)
 
 
 extern void eint_interrupt_handler(void) ;
-/* BEGIN PN:DTS2013033006231 ,Deleted by l00184147, 2013/3/27*/ 
-/* END PN:DTS2013033006231 ,Deleted by l00184147, 2013/3/27*/ 
+void testGPIO77()
+{
+  pr_err("cyt testGPIO77\n");
+  mt_set_gpio_pull_enable(GPIO77, GPIO_PULL_ENABLE);
+  mt_set_gpio_pull_select(GPIO77, GPIO_PULL_UP);
 
+  mt_set_gpio_mode(GPIO77, 0);
+  mt_set_gpio_dir(GPIO77, GPIO_DIR_OUT);
+  mt_set_gpio_out(GPIO77, GPIO_OUT_ONE);  
+  msleep(20);
+  mt_set_gpio_out(GPIO77, GPIO_OUT_ZERO);  
+  msleep(40);
+  mt_set_gpio_out(GPIO77, GPIO_OUT_ONE);  
+  msleep(20);
+
+
+}
 
 void cyttsp4_mtk_gpio_interrupt_register()
 {
@@ -205,7 +222,6 @@ static int cyttsp4_xres(struct cyttsp4_core_platform_data *pdata,
 }
 
 //add begin by linghai
-/* BEGIN PN:DTS2013020108492  ,Modified by l00184147, 2013/1/26*/ 
 static ssize_t cyttps4_virtualkeys_show(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
@@ -218,7 +234,6 @@ static ssize_t cyttps4_virtualkeys_show(struct kobject *kobj,
 		__stringify(KEY_MENU) ":600:1340:200:100"
 		"\n");
 }
-/* END PN:DTS2013020108492  ,Modified by l00184147, 2013/1/26*/ 
 
 static struct kobj_attribute cyttsp4_virtualkeys_attr = {
 	.attr = {
@@ -243,8 +258,6 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 		int on, struct device *dev)
 {
   printk("cyttsp4_init\n");
-	hw_product_type board_id;
-	board_id=get_hardware_product_version();
 	int rc = 0;
 //add by linghai begin
 	struct kobject *properties_kobj;
@@ -263,51 +276,23 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 	  mt_set_gpio_pull_enable(GPIO_CTP_EINT_PIN, GPIO_PULL_ENABLE);
 	  mt_set_gpio_pull_select(GPIO_CTP_EINT_PIN, GPIO_PULL_UP);
 
-		if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
-		{
-			hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
-			properties_kobj = kobject_create_and_add("board_properties", NULL);
-			if (properties_kobj)
-			ret = sysfs_create_group(properties_kobj,
+//	  dev_info(dev,"%s: RESET CYTTSP poweron VGP4 2.8v \n",__func__);
+         hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
+	  properties_kobj = kobject_create_and_add("board_properties", NULL);
+	  if (properties_kobj)
+		ret = sysfs_create_group(properties_kobj,
 				&cyttsp4_properties_attr_group);
-			if (!properties_kobj || ret)
-				pr_err("%s: failed to create board_properties\n", __func__);
-		}
-		else if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
-		{
-			if((board_id) == HW_G700U_VER_A)
-			{
-				hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
-			}
-			else
-			{
-				hwPowerOn(MT65XX_POWER_LDO_VGP5, VOL_1800, "TP");
-				hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
-			}
-		}
-		else
-			pr_err("power on cyttsp4 error\n");
-	}
-	else {
-			if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER) 
-			{
-				hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
-			}
-			else if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
-			{
-				if((board_id) == HW_G700U_VER_A)
-				{
-					hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
-				}
-				else
-				{
-					hwPowerDown(MT65XX_POWER_LDO_VGP5, "TP");
-					hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
-				}
-			}
-			else
-				pr_err("power down cyttsp4 error\n");
-	  cyttsp4_init_i2c_free_dma_buffer();
+	  if (!properties_kobj || ret)
+		printk("%s: failed to create board_properties\n", __func__);
+//add by linghai end
+         } else {
+//           dev_info(dev,"%s: RESET CYTTSP poweroff VGP4 2.8v \n",__func__);
+           hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
+
+	    cyttsp4_init_i2c_free_dma_buffer();
+		/* gpio_free(CYTTSP4_I2C_IRQ_GPIO); */
+		/* gpio_free(CYTTSP4_I2C_IRQ_GPIO); */
+	    // FIXME
 	}
 
 	
@@ -350,7 +335,6 @@ static int cyttsp4_power(struct cyttsp4_core_platform_data *pdata,
 
 	return cyttsp4_sleep(dev);
 }
-/* BEGIN PN: DTS2013021602307 ,Modified by l00184147, 2013/2/16*/
 /* Button to keycode conversion */
 static u16 cyttsp4_btn_keys[] = {
 	/* use this table to map buttons to keycodes (see input.h) */
@@ -363,7 +347,6 @@ static u16 cyttsp4_btn_keys[] = {
 	KEY_CAMERA,		/* 212 */
 	KEY_POWER		/* 116 */
 };
-/* END PN: DTS2013021602307 ,Modified by l00184147, 2013/2/16*/
 
 static struct touch_settings cyttsp4_sett_btn_keys = {
 	.data = (uint8_t *)&cyttsp4_btn_keys[0],
@@ -429,6 +412,12 @@ struct cyttsp4_sett_param_map cyttsp4_G700_config_param_map[] = {
 		  },
 		  
 };
+#include <linux/Ofilm_G610_config.h>
+static struct touch_settings cyttsp4_G610_sett_ofilm_param_regs = {
+       .data = (uint8_t *)&cyttsp4_G610_ofilm_param_regs[0],
+       .size = ARRAY_SIZE(cyttsp4_G610_ofilm_param_regs),
+       .tag = 0,
+};
 #include <linux/Eely_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_eely_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_eely_param_regs[0],
@@ -441,13 +430,6 @@ static struct touch_settings cyttsp4_G610_sett_truly_param_regs = {
        .size = ARRAY_SIZE(cyttsp4_G610_truly_param_regs),
        .tag = 0,
 };
-#include <linux/Ofilm_G610_config.h>
-static struct touch_settings cyttsp4_G610_sett_ofilm_param_regs = {
-       .data = (uint8_t *)&cyttsp4_G610_ofilm_param_regs[0],
-       .size = ARRAY_SIZE(cyttsp4_G610_ofilm_param_regs),
-       .tag = 0,
-};
-
 #include <linux/Mutto_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_mutto_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_mutto_param_regs[0],
@@ -589,18 +571,13 @@ static struct cyttsp4_core_platform_data _cyttsp4_G700_core_platform_data = {
 
 #define CY_IGNORE_VALUE 0xFFFF
 
-/* BEGIN PN: DTS2013031908354  ,Modified by l00184147, 2013/3/19*/
 static const uint16_t cyttsp4_abs[] = {
 	ABS_MT_POSITION_X, CY_ABS_MIN_X, CY_ABS_MAX_X, 0, 0,
 	ABS_MT_POSITION_Y, CY_ABS_MIN_Y, CY_ABS_MAX_Y, 0, 0,
 	ABS_MT_PRESSURE, CY_ABS_MIN_P, CY_ABS_MAX_P, 0, 0,
 	CY_IGNORE_VALUE, CY_ABS_MIN_W, CY_ABS_MAX_W, 0, 0,
 	ABS_MT_TRACKING_ID, CY_ABS_MIN_T, CY_ABS_MAX_T, 0, 0,
-	ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0,
-	ABS_MT_TOUCH_MINOR, 0, 255, 0, 0,
-	ABS_MT_ORIENTATION, -128, 127, 0, 0,
 };
-/* END PN: DTS2013031908354  ,Modified by l00184147, 2013/3/19*/
 
 struct touch_framework cyttsp4_framework = {
 	.abs = (uint16_t *)&cyttsp4_abs[0],
