@@ -48,15 +48,31 @@ static int use_bl_fb = 0;
 /* MT6589 USB GADGET                                                     */
 /*=======================================================================*/
 static u64 usb_dmamask = DMA_BIT_MASK(32);
+static struct musb_hdrc_config musb_config_mt65xx = {
+	.multipoint     = true,
+	.dyn_fifo       = true,
+	.soft_con       = true,
+	.dma            = true,
+	.num_eps        = 16,
+	.dma_channels   = 8,
+};
 
+static struct musb_hdrc_platform_data usb_data = {
+#ifdef CONFIG_USB_MTK_OTG
+	.mode           = MUSB_OTG,
+#else
+	.mode           = MUSB_PERIPHERAL,
+#endif
+	.config         = &musb_config_mt65xx,
+};
 struct platform_device mt_device_usb = {
 	.name		  = "mt_usb",
-	.id		  = -1,
+	.id		  = -1,   //only one such device
 	.dev = {
-		//.platform_data          = &usb_data_mt65xx,
+		.platform_data          = &usb_data,
 		.dma_mask               = &usb_dmamask,
 		.coherent_dma_mask      = DMA_BIT_MASK(32),
-		//.release=musbfsh_hcd_release,
+        /*.release=musbfsh_hcd_release,*/
 		},
 };
 
@@ -1383,6 +1399,38 @@ static struct platform_device actuator_dev = {
 	.name		  = "lens_actuator",
 	.id		  = -1,
 };
+
+static struct platform_device actuator_dev0 = {
+	.name		  = "lens_actuator0",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev1 = {
+	.name		  = "lens_actuator1",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev2 = {
+	.name		  = "lens_actuator2",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev3 = {
+	.name		  = "lens_actuator3",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev4 = {
+	.name		  = "lens_actuator4",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev5 = {
+	.name		  = "lens_actuator5",
+	.id		  = -1,
+};
+
+
 /*=======================================================================*/
 /* MT6575 jogball                                                        */
 /*=======================================================================*/
@@ -1439,12 +1487,12 @@ int HW_TP_Init(hw_product_type board_id)
 
     printk("-- HW_TP_Init Begin --\n");
 
-    if((board_id & HW_VER_MAIN_MASK) == HW_G700_VER)
+    if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
     {
         cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
         cyttsp4_register_core_device(&cyttsp4_G700_core_info);
     }
-    else if((board_id & HW_VER_MAIN_MASK) == HW_G610_VER)
+    else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
     {
         cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
         cyttsp4_register_core_device(&cyttsp4_G610_core_info);
@@ -1496,7 +1544,8 @@ int hw_register_tp(void)
     hw_product_type board_id;
     board_id = get_hardware_product_version(); 
 
-    if ((NORMAL_BOOT == g_boot_mode) || (ALARM_BOOT == g_boot_mode))
+    if (((NORMAL_BOOT == g_boot_mode) || (ALARM_BOOT == g_boot_mode))
+        && ((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER))
     {
         kthread_run(hw_thread_register_tp, NULL, "hw_thread_register_TP");
         return 0;
@@ -1681,13 +1730,13 @@ __init int mt6589_board_init(void)
      */
     if (((bl_fb.base == FB_START) && (bl_fb.size == FB_SIZE)) ||
          (use_bl_fb == 2)) {
-        printk("FB is initialized by BL(%d)\n", use_bl_fb);
+        printk(KERN_ALERT"FB is initialized by BL(%d)\n", use_bl_fb);
         mtkfb_set_lcm_inited(1);
     } else if ((bl_fb.base == 0) && (bl_fb.size == 0)) {
-        printk("FB is not initialized(%d)\n", use_bl_fb);
+        printk(KERN_ALERT"FB is not initialized(%d)\n", use_bl_fb);
         mtkfb_set_lcm_inited(0);
     } else {
-        printk(
+        printk(KERN_ALERT
 "******************************************************************************\n"
 "   WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING\n"
 "******************************************************************************\n"
@@ -1722,7 +1771,7 @@ __init int mt6589_board_init(void)
 	resource_fb[0].start = FB_START;
 	resource_fb[0].end   = FB_START + FB_SIZE - 1;
 
-    printk("FB start: 0x%x end: 0x%x\n", resource_fb[0].start,
+    printk(KERN_ALERT"FB start: 0x%x end: 0x%x\n", resource_fb[0].start,
                                          resource_fb[0].end);
 
     retval = platform_device_register(&mt6575_device_fb);
@@ -1824,13 +1873,6 @@ __init int mt6589_board_init(void)
 	if (retval != 0)
 		return retval;
 
-#if defined(CUSTOM_KERNEL_ALSPS)
-	retval = platform_device_register(&sensor_alsps);
-		printk("sensor_alsps device!");
-	if (retval != 0)
-		return retval;
-#endif
-
 #if defined(CUSTOM_KERNEL_ACCELEROMETER)
 	retval = platform_device_register(&sensor_gsensor);
 		printk("sensor_gsensor device!");
@@ -1865,29 +1907,36 @@ __init int mt6589_board_init(void)
 		return retval;
 #endif
 
+#if defined(CUSTOM_KERNEL_ALSPS)
+	retval = platform_device_register(&sensor_alsps);
+		printk("sensor_alsps device!");
+	if (retval != 0)
+		return retval;
+#endif
 #endif
 
-/* Register core and devices */
 #if defined(HW_HAVE_TP_THREAD)
 #else
+/* Register core and devices */
 hw_product_type board_id;
 board_id=get_hardware_product_version();
-if((board_id & HW_VER_MAIN_MASK) == HW_G700_VER)
+//cyttsp4_register_core_device(&cyttsp4_core_info);
+if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
 	{
 	cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
-	cyttsp4_register_core_device(&cyttsp4_G700_core_info);
+       cyttsp4_register_core_device(&cyttsp4_G700_core_info);
 }
-else if((board_id & HW_VER_MAIN_MASK) == HW_G610_VER)
+else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
 	{
 	cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
-	cyttsp4_register_core_device(&cyttsp4_G610_core_info);
+       cyttsp4_register_core_device(&cyttsp4_G610_core_info);
 }
 else	{
 	printk("cyttsp4_register_device error\n");
 }
+
 cyttsp4_register_device(&cyttsp4_btn_info);
 #endif
-
 #if defined(CONFIG_MTK_USBFSH)
 	printk("register musbfsh device\n");
 	retval = platform_device_register(&mt_usb11_dev);
@@ -2025,6 +2074,37 @@ retval = platform_device_register(&dummychar_device);
     if (retval != 0){
         return retval;
     }
+
+    retval = platform_device_register(&actuator_dev0);
+    if (retval != 0){
+        return retval;
+    }
+	
+    retval = platform_device_register(&actuator_dev1);
+    if (retval != 0){
+        return retval;
+    }	
+
+    retval = platform_device_register(&actuator_dev2);
+    if (retval != 0){
+        return retval;
+    }
+
+	retval = platform_device_register(&actuator_dev3);
+	if (retval != 0){
+		return retval;
+	}
+
+	retval = platform_device_register(&actuator_dev4);
+	if (retval != 0){
+		return retval;
+	}
+
+	retval = platform_device_register(&actuator_dev5);
+	if (retval != 0){
+		return retval;
+	}
+	
 #endif
 //
 //=======================================================================

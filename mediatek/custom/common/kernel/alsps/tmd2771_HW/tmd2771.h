@@ -55,7 +55,6 @@
 #include <linux/ioctl.h>
 
 extern int TMD2771_CMM_PPCOUNT_VALUE;
-extern int TMD2771_CMM_CONTROL_VALUE;
 
 extern int TMD2771_G520_CMM_PPCOUNT_VALUE;
 extern int TMD2771_G700U_CMM_PPCOUNT_VALUE;
