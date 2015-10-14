@@ -62,6 +62,9 @@ MSDK_SENSOR_INIT_FUNCTION_STRUCT SensorList[] =
 #if defined(S5K4E1GA_MIPI_RAW)
     RAW_INFO(S5K4E1GA_SENSOR_ID, SENSOR_DRVNAME_S5K4E1GA_MIPI_RAW,NULL),
 #endif
+#if defined(MT9M114_MIPI_YUV)
+			YUV_INFO(MT9M114_SENSOR_ID, SENSOR_DRVNAME_MT9M114_MIPI_YUV, NULL), 
+#endif
 
 /*  ADD sensor driver before this line */
     {0,{0},NULL, NULL, NULL}//end of list
