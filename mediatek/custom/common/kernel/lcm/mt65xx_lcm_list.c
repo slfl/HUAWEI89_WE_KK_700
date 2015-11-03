@@ -1,7 +1,8 @@
 #include <lcm_drv.h>
 #ifdef BUILD_LK
-#include <platform/mt_gpio.h>
+#include <platform/disp_drv_platform.h>
 #else
+#include <linux/delay.h>
 #include <mach/mt_gpio.h>
 #endif
 #include <cust_gpio_usage.h>
@@ -22,7 +23,17 @@ LCM_DRIVER* lcm_driver_list[] =
 
 unsigned int lcm_count = sizeof(lcm_driver_list)/sizeof(LCM_DRIVER*);
 //LCM_COMPILE_ASSERT(0 != sizeof(lcm_driver_list)/sizeof(LCM_DRIVER*));
+
 static unsigned char lcd_id_pins_value = 0xFF;
+
+/******************************************************************************
+Function:       which_lcd_module
+Description:    get lcd module value
+Input:          none
+Output:         none
+Return:         lcd module value
+Others:          none
+******************************************************************************/
 unsigned char which_lcd_module()
 {
     unsigned char lcd_id0, lcd_id1;

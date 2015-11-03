@@ -90,7 +90,6 @@ static struct LCM_setting_table tianma_ips_init[] = {
    {0x00,1,{0x80}},      
    {0xc4,2,{0x00,0x84}}, 
 
-
    {0x00,1,{0xa0}},      
    {0xc4,8,{0x33,0x09,0x90,0x2b,0x33,0x09,0x90,0x54}}, 
 
@@ -172,10 +171,8 @@ static struct LCM_setting_table tianma_ips_init[] = {
    {0x00,1,{0xd0}},      
    {0xcc,15,{0x0e,0x00,0x10,0x00,0x0a,0x00,0x0c,0x04,0x02,0x00,0x06,0x00,0x00,0x00,0x00}},
 
-
    {0x00,1,{0x80}},      
    {0xce,12,{0x8a,0x03,0x28,0x89,0x03,0x28,0x88,0x03,0x28,0x87,0x03,0x28}},
-
 
    {0x00,1,{0x90}},      
    {0xce,15,{0x38,0x0f,0x28,0x38,0x0e,0x28,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}},
@@ -198,7 +195,6 @@ static struct LCM_setting_table tianma_ips_init[] = {
    {0x00,1,{0x90}},      
    {0xcf,14,{0xf0,0x00,0x00,0x10,0x00,0x00,0x00,0xf0,0x00,0x00,0x10,0x00,0x00,0x00}},
 
-
    {0x00,1,{0xa0}},      
    {0xcf,14,{0xf0,0x00,0x00,0x10,0x00,0x00,0x00,0xf0,0x00,0x00,0x10,0x00,0x00,0x00}},
 
@@ -208,7 +204,6 @@ static struct LCM_setting_table tianma_ips_init[] = {
    {0x00,1,{0xc0}},      
    {0xcf,10,{0x01,0x01,0x20,0x20,0x00,0x00,0x02,0x01,0x00,0x00}},
    
-
    {0x35, 1, {0x00}},
 
    {0x53,1,{0x24}},  
@@ -243,7 +238,6 @@ static struct LCM_setting_table lcm_sleep_mode_in_setting[] = {
     {REGFLAG_DELAY, 120, {}},
     {REGFLAG_END_OF_TABLE, 0x00, {}}
 };
-
 
 static struct LCM_setting_table lcm_backlight_level_setting[] = {
 	{0x51, 1, {0xFF}},
@@ -599,44 +593,7 @@ static unsigned int lcm_esd_recover(void)
 static unsigned int lcm_compare_id(void)
 {
     unsigned char LCD_ID_value = 0;
-#if 0
-    unsigned int array[16];
-    unsigned char buffer[12];
-    unsigned int id = 0;
-    int i;
 
-    lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
-    lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
-    /*Optimization LCD initialization time*/
-    lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
-    MDELAY(30);
-    lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
-    MDELAY(30);
-
-    for(i = 0; i < 12; i++)
-        buffer[i] = 0x00;
-
-
-    array[0] = 0x00033700;
-    dsi_set_cmdq(array, 1, 1);
-
-    // Read [WC, WC, ECC, P1, P2, P3, CRC0, CRC1]+ Error Report(4 Bytes)
-    read_reg_v2(0x04, buffer, 12);
-
-/*
-#ifdef BUILD_UBOOT
-    for(i = 0; i < 12; i++)
-      printf("buffer[%d]:0x%x \n",i,buffer[i]);
-#else
-    for(i = 0; i < 12; i++)
-	  printk(KERN_EMERG "buffer[%d]:0x%x \n",i,buffer[i]);
-
-#endif
-*/
-    id = buffer[1];
-
-    return ( LCM_ID == id ? 1 :0);
-#endif
 #ifdef BUILD_LK
 	printf("otm9608a_lcm_compare_id\n");
 #else
@@ -667,10 +624,10 @@ LCM_DRIVER tianma_otm9608a_lcm_drv =
     .set_pwm_level	= lcm_set_pwm_level,
     //.set_pwm      = lcm_setpwm,
     //.get_pwm      = lcm_getpwm
-//    .set_cabcmode = lcm_setcabcmode,
-//    .esd_check     = lcm_esd_check,
+    //.set_cabcmode = lcm_setcabcmode,
+    //.esd_check     = lcm_esd_check,
     /*heighten the brightness of qimei LCD*/
-//    .esd_recover       = lcm_esd_recover,        
+    //.esd_recover       = lcm_esd_recover,        
     .compare_id     = lcm_compare_id,
 #endif
 };

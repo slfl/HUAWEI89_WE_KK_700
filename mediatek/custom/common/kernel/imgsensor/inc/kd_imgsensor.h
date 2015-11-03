@@ -169,7 +169,7 @@
 #define S5K3E2FX_SENSOR_ID                      0x3E2F
 #define S5K4E1GA_SENSOR_ID                      0x4E10
 #define S5K5CAGX_SENSOR_ID                      0x05ca
-#define S5K8AAYX_MIPI_SENSOR_ID			0x08aa
+#define S5K8AAYX_MIPI_SENSOR_ID					0x08aa
 #define S5K3H7Y_SENSOR_ID               	0x3087
 #define S5K4H5YX_SENSOR_ID                      0x485B
 #define OV8850_SENSOR_ID                        0x8850

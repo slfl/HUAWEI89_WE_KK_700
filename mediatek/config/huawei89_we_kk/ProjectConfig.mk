@@ -10,19 +10,19 @@ AUTO_ADD_GLOBAL_DEFINE_BY_VALUE = CUSTOM_KERNEL_03_IMGSENSOR CUSTOM_KERNEL_03_LE
 BUILD_GMS = no
 
 # to choose which boot logo folder would be used, the boot logo folder path is mediatek/custom/common/uboot/logo/
-BOOT_LOGO = qhd
+BOOT_LOGO = cu_qhd
 
 # Decide whether to build kernel or not.
 BUILD_KERNEL = yes
 
 # Decide whether to build lk or not.
-BUILD_LK = yes
+BUILD_LK = no
 
 # The feature option is only applicable to MTK SDK project (banyan_addon). It decides what packages to produce. api: Create MTK SDK API package only (e.g. mtk_sdk_api_addon-10.1.zip) toolset: Create MTK SDK Toolset package only (e.g. mtk_sdk_toolset-1.0.zip) all: Create both MTK SDK API and Toolset package
 BUILD_MTK_SDK = 
 
 # Decide whether to build preloader or not.
-BUILD_PRELOADER = yes
+BUILD_PRELOADER = no
 
 # Decide whether to build uboot or not.
 BUILD_UBOOT = no
@@ -86,7 +86,7 @@ CUSTOM_HAL_SUB_IMGSENSOR = mt9m114_mipi_yuv
 CUSTOM_HAL_SUB_LENS = dummy_lens
 
 # accelerometer sensor to detect accelerometer from x y z axis.
-CUSTOM_KERNEL_ACCELEROMETER = lis33dh_auto mma8452q_auto
+CUSTOM_KERNEL_ACCELEROMETER = lis3dh_auto mma8452q_auto
 
 # ALSPS sensor driverto detect ambint light and the object is close or far awary from device
 CUSTOM_KERNEL_ALSPS = tmd2771_HW
@@ -179,7 +179,7 @@ CUSTOM_KERNEL_VIBRATOR = vibrator
 CUSTOM_LK_LCM = otm1282a_hd720_dsi_cmd
 
 # Define which modem will be used.
-CUSTOM_MODEM = huawei89_cmcc_jb2_md2_tdd128hspa
+CUSTOM_MODEM = huawei89_we_jb2_md1_hspa
 
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_AUTH_SUPPORT = no
@@ -670,7 +670,7 @@ MTK_DSPIRDBG = no
 MTK_DT_SUPPORT = no
 
 # For MTK's dual mic configuration.
-MTK_DUAL_MIC_SUPPORT = yes
+MTK_DUAL_MIC_SUPPORT = no
 MTK_DVFS_DISABLE_LOW_VOLTAGE_SUPPORT = no
 MTK_DX_HDCP_SUPPORT = no
 
@@ -1296,7 +1296,7 @@ MTK_TELEPHONY_BOOTUP_MODE_SLOT2 = 1
 MTK_TELEPHONY_MODE = 1
 
 # "yes" means enable Tencent mobile manager(normal version) feature and "no" disable.
-MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT = yes
+MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT = no
 
 # "yes" means enable Tencent mobile manager(slim version) feature and "no" disable.
 MTK_TENCENT_MOBILE_MANAGER_SLIM_SUPPORT = no
@@ -1348,7 +1348,7 @@ MTK_VIBSPK_SUPPORT = no
 MTK_VIDEOORB_APP = no
 
 # support video record and playback to 1080p  resolution
-MTK_VIDEO_1080P = yes
+MTK_VIDEO_1080P = no
 MTK_VIDEO_4KH264_SUPPORT = no
 
 # Provide an option to enable/disable app widget:video favorites
