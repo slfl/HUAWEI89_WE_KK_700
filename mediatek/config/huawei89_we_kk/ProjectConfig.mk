@@ -16,7 +16,7 @@ BOOT_LOGO = cu_qhd
 BUILD_KERNEL = yes
 
 # Decide whether to build lk or not.
-BUILD_LK = no
+BUILD_LK = yes
 
 # The feature option is only applicable to MTK SDK project (banyan_addon). It decides what packages to produce. api: Create MTK SDK API package only (e.g. mtk_sdk_api_addon-10.1.zip) toolset: Create MTK SDK Toolset package only (e.g. mtk_sdk_toolset-1.0.zip) all: Create both MTK SDK API and Toolset package
 BUILD_MTK_SDK = 
@@ -30,7 +30,7 @@ BUILD_UBOOT = no
 # User can input ASCII string which is showed in About phone and bootimg header.
 CUSTOM_BUILD_VERNO = 
 
-# it is used to decide MT6620 combo chip BT and WiFi antenna architecture.  The meaning of each value is defined as follows. Please note that "CUSTOM_HAL_ANT" setting must be consistent with customer's MT6620 antenna architecture layout. Improper setting may lead to BT/WiFi malfunctions
+# it is used to decide MT6620 combo chip BT and WiFi antenna architecture.  The meaning of each value is defined as follows. Please note that "CUSTOM_HAL_ANT" setting must be consistent with customer's MT6628 antenna architecture layout. Improper setting may lead to BT/WiFi malfunctions
 CUSTOM_HAL_ANT = mt6628_ant_m1
 
 # For audio flinger's customization folder
@@ -49,7 +49,7 @@ CUSTOM_HAL_COMBO = mt6628
 # User space driver : Sensor module might have calibration data such as lens shading. You can adopt it according to EEPROM part number. Now, it's only s24cs64a_eeprom
 CUSTOM_HAL_EEPROM = dummy_eeprom
 
-# Kernel space camera flashlight HAL driver.
+# User space cameara flashlight driver.You can use this driver to choose cameara flashlight type.
 CUSTOM_HAL_FLASHLIGHT = constant_flashlight
 
 CUSTOM_HAL_IMGSENSOR = s5k4h5yx_mipi_raw ov8850_mipi_raw mt9m114_mipi_yuv
@@ -179,7 +179,7 @@ CUSTOM_KERNEL_VIBRATOR = vibrator
 CUSTOM_LK_LCM = otm1282a_hd720_dsi_cmd
 
 # Define which modem will be used.
-CUSTOM_MODEM = huawei89_we_jb2_md1_hspa
+CUSTOM_MODEM = huawei89_we_kk_md1_hspa
 
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_AUTH_SUPPORT = no
@@ -557,7 +557,7 @@ MTK_CHIP_VER = S01
 # Decide whether to support mtk image size  check
 MTK_CHKIMGSIZE_SUPPORT = no
 
-# this feature is used to identify MT6620 chip version. MT6620E3 or later version should be used for this feature
+# this feature is used to identify MT6628 chip version. MT6628E3 or later version should be used for this feature
 MTK_COMBO_CHIP = MT6628
 
 # valid_value_list = yes,no
@@ -567,7 +567,7 @@ MTK_COMBO_PSM_RX_TH = 1600
 MTK_COMBO_PSM_TX_TH = 400
 MTK_COMBO_QUICK_SLEEP_SUPPORT = yes
 
-# used to describe whether WCN combo chip(MT6620/MT6628/MT6629,etc.) is supported or not
+# used to describe whether WCN combo chip(MT6628/MT6628/MT6629,etc.) is supported or not
 MTK_COMBO_SUPPORT = yes
 MTK_CSD_DIALER_SUPPORT = no
 
@@ -599,10 +599,7 @@ MTK_DATAUSAGELOCKSCREENCLIENT_SUPPORT = yes
 # This option is for Data Usage Enhancement feature
 # When MTK_DATAUSAGE_SUPPORT = yes, should enable MTK_DATAUSAGE_SUPPORT
 MTK_DATAUSAGE_SUPPORT = yes
-MTK_DATA_TRANSFER_APP = yes
-
-# ddr3 support
-MTK_DDR3_SUPPORT = no
+MTK_DATA_TRANSFER_APP = no
 
 # support a dedicated APN when enable tethering
 MTK_DEDICATEDAPN_SUPPORT = no
@@ -641,7 +638,7 @@ MTK_DITHERING_SUPPORT = yes
 
 # Define DMNR tuning recording source.
 MTK_DMNR_TUNING_AT_MD = yes
-MTK_DM_AGENT_SUPPORT = yes
+MTK_DM_AGENT_SUPPORT = no
 
 # Device Management. For example, collection or configuration parameter's of device, upgrade software, lock or unlock device, wipe data, etc.
 MTK_DM_APP = no
@@ -859,7 +856,7 @@ MTK_IMEI_LOCK = no
 MTK_INCALL_HANDSFREE_DMNR = no
 
 # Incall normal mode DMNR support.
-MTK_INCALL_NORMAL_DMNR = yes
+MTK_INCALL_NORMAL_DMNR = no
 
 # Support build modem database file into system image under the path: "system/etc/mddb".
 MTK_INCLUDE_MODEM_DB_IN_IMAGE = yes
@@ -1076,7 +1073,7 @@ MTK_PARTITION_TABLE_PLAIN_TEXT = no
 MTK_PASSPOINT_R1_SUPPORT = no
 MTK_PCB_BATTERY_SENSOR = no
 MTK_PERFSERVICE_SUPPORT = yes
-MTK_PERMISSION_CONTROL = yes
+MTK_PERMISSION_CONTROL = no
 MTK_PERSIST_PARTITION_SUPPORT = no
 
 # This feature option is to define whether we support features for phone number attribution of China (CMCC, CU and CT) MTK_PHONE_NUMBER_GEODESCRIPTION = Yes means that  phone number attribution of China is enabled in current project, vice versa
@@ -1135,7 +1132,7 @@ MTK_RCSE_SUPPORT = no
 MTK_REGIONALPHONE_SUPPORT = no
 
 # Define release package for differernt codebase of different customer.(Different customer may get different number of source files)
-MTK_RELEASE_PACKAGE = rel_customer_advanced_mt6589 rel_customer_platform_mt6589
+MTK_RELEASE_PACKAGE = rel_customer_basic rel_customer_platform_mt6589
 
 # MTK_RILD_READ_IMSI is used to config if we will try to read IMSI from SIM during rild initialization. And need to mapping the option to a system property.
 MTK_RILD_READ_IMSI = no
@@ -1166,8 +1163,8 @@ MTK_SD_SUPPORT = yes
 # It is used to control database operation for contacts and call log search, and shared by both Java code and native code.
 MTK_SEARCH_DB_SUPPORT = yes
 
-# MTK_SECURITY_SW_SUPPORT = yes = > All security function in pre-loader/LK/kernel/android will be built into software images
-# MTK_SECURITY_SW_SUPPORT = no = > All security function in pre-loader/LK/kernel/android will NOT be built into software images
+# MTK_SECURITY_SW_SUPPORT=yes==> All security function in pre-loader/LK/kernel/android will be built into software images
+# MTK_SECURITY_SW_SUPPORT=no==> All security function in pre-loader/LK/kernel/android will NOT be built into software images
 MTK_SECURITY_SW_SUPPORT = yes
 
 # Secure boot means that only trusted image can be booted up on the phone.   Description of option value: (1) ATTR_SBOOT_ENABLE : secure boot will be enabled on the phone (2) ATTR_SBOOT_ENABLE : image won't be checked at boot time (3) ATTR_SBOOT_ONLY_ENABLE_ON_SCHIP : secure boot is only enabled on security chip (that's the default setting)
@@ -1182,8 +1179,8 @@ MTK_SEC_MODEM_AUTH = no
 # If this feature is enabled, modem load will be encrypted  Description of option value: (1) yes : modem image will be encrypted at build time (2) no : modem image won't be encrypted
 MTK_SEC_MODEM_ENCODE = no
 
-# yes  = > Enable MODEM NVRAM anti-clone
-#  no  = > Disable Modem NVRAM anti-clone
+# yes ==> Enable MODEM NVRAM anti-clone
+#  no ==> Disable Modem NVRAM anti-clone
 MTK_SEC_MODEM_NVRAM_ANTI_CLONE = no
 
 # to enable modem secro support MTK_SEC_SECRO_AC_SUPPORT yes : enable modem secro support no : disable modem secro support
@@ -1193,7 +1190,7 @@ MTK_SEC_SECRO_AC_SUPPORT = yes
 MTK_SEC_USBDL = ATTR_SUSBDL_ONLY_ENABLE_ON_SCHIP
 
 # MTK_SEC_VIDEO_PATH_SUPPORT = yes means,enabling MTK Secure Video Path
-# MTK_SEC_VIDEO_PATH_SUPPORT, = no means disabling MTK Secure Video Path.
+# MTK_SEC_VIDEO_PATH_SUPPORT,= no means disabling MTK Secure Video Path.
 MTK_SEC_VIDEO_PATH_SUPPORT = no
 
 # yes : Enable MTK wifi-dispaly secure video path support
@@ -1239,7 +1236,7 @@ MTK_SIM_HOT_SWAP_COMMON_SLOT = no
 MTK_SIM_RECOVERY = yes
 
 # MTK_SINA_WEIBO_SUPPORT = "yes" means enable Sina weibo feature and "no" disable.
-MTK_SINA_WEIBO_SUPPORT = yes
+MTK_SINA_WEIBO_SUPPORT = no
 
 # Control snigle cam 3d capture support or not
 MTK_SINGLE_3DSHOT_SUPPORT = no
@@ -1248,7 +1245,7 @@ MTK_SINGLE_3DSHOT_SUPPORT = no
 MTK_SIP_SUPPORT = no
 
 # if MTK_SMSREG_APP = yes,build SmsReg.apk
-MTK_SMSREG_APP = yes
+MTK_SMSREG_APP = no
 
 # use to check if need parse meta DFO value, which is only used in SMT load.
 MTK_SMT_SUPPORT = no
@@ -1348,8 +1345,8 @@ MTK_VIBSPK_SUPPORT = no
 MTK_VIDEOORB_APP = no
 
 # support video record and playback to 1080p  resolution
-MTK_VIDEO_1080P = no
-MTK_VIDEO_4KH264_SUPPORT = no
+MTK_VIDEO_1080P = yes
+MTK_VIDEO_4KH264_SUPPORT = yes
 
 # Provide an option to enable/disable app widget:video favorites
 MTK_VIDEO_FAVORITES_WIDGET_APP = yes
@@ -1468,10 +1465,6 @@ SIM_REFRESH_RESET_BY_MODEM = no
 
 # This is used to select the ARM architecture when building Android. For example, if armv6 is set, build/core/combo/arch/arm/armv6.mk will be used for building Android. Then ARMv6 related configurations will be set properly in the CFLAGS.
 TARGET_ARCH_VARIANT = armv7-a-neon
-
-# OpenGL render
-USE_OPENGL_RENDERER = true
-
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK = true
 
 # TELEPHONY_DFOSET decribe this DFO set enable or disable.
