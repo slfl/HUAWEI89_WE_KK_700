@@ -4,11 +4,11 @@
 #include<cust_kpd.h>
 
 #define MT65XX_META_KEY		42	/* KEY_2 */
-#define MT65XX_PMIC_RST_KEY	1000	/* Invalid Key */
+//#define MT65XX_PMIC_RST_KEY	1000	/* Invalid Key */
 #define MT_CAMERA_KEY 		10
 
-#define MT65XX_BOOT_MENU_KEY       11   /* KEY_VOLUMEUP */
+#define MT65XX_BOOT_MENU_KEY       0   /* KEY_VOLUMEUP */
 #define MT65XX_MENU_SELECT_KEY     MT65XX_BOOT_MENU_KEY   
-#define MT65XX_MENU_OK_KEY         12    /* KEY_VOLUMEDOWN */
+#define MT65XX_MENU_OK_KEY         2    /* KEY_VOLUMEDOWN */
 
 #endif /* __CUST_KEY_H__ */
