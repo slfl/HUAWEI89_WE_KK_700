@@ -79,7 +79,7 @@ ifeq ($(CONFIG_THERMAL),y)
 endif
 
 obj-y += mt_ptp.o
-obj-y += pftracer.o
+obj-$(CONFIG_MTK_ETM) += pftracer.o
 
 # Hibernation
 AFLAGS_swsusp.o	:= -DTEXT_OFFSET=$(TEXT_OFFSET)
@@ -89,6 +89,6 @@ ifneq ($(MTK_TABLET_HARDWARE), )
 ccflags-y += -DMTK_TABLET_PLATFORM=\"$(shell echo $(MTK_TABLET_HARDWARE) | tr a-z A-Z )\"
 endif
 
-KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=neon)
+KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=neon-vfpv4)
 
 
