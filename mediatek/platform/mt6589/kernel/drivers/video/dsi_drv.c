@@ -70,13 +70,10 @@ static PDSI_VM_CMDQ_REGS const DSI_VM_CMD_REG = (PDSI_VM_CMDQ_REGS)(DSI_BASE + 0
 static PDSI_PHY_REGS const DSI_PHY_REG = (PDSI_PHY_REGS)(MIPI_CONFIG_BASE);
 static PDSI_CMDQ_REGS const DSI_CMDQ_REG = (PDSI_CMDQ_REGS)(DSI_BASE+0x180);
 static PLCD_REGS const LCD_REG = (PLCD_REGS)(LCD_BASE);
-
+#ifdef BUILD_UBOOT
 static MIPITX_CFG0_REG mipitx_con0;
+#endif
 static MIPITX_CFG1_REG mipitx_con1;
-static MIPITX_CFG3_REG mipitx_con3;
-static MIPITX_CFG6_REG mipitx_con6;
-static MIPITX_CFG8_REG mipitx_con8;
-static MIPITX_CFG9_REG mipitx_con9;
 
 extern LCM_DRIVER *lcm_drv;
 static bool dsi_log_on = false;
@@ -187,7 +184,7 @@ static long int get_current_time_us(void)
 #endif
 static void lcm_mdelay(UINT32 ms)
 {
-    udelay(1000 * ms);
+    mdelay(ms);
 }
 void DSI_Enable_Log(bool enable)
 {
@@ -1374,7 +1371,7 @@ void DSI_Config_VDO_Timing(LCM_PARAMS *lcm_params)
 
 	ASSERT(lcm_params->dsi.horizontal_frontporch * dsiTmpBufBpp > 11);
 	horizontal_frontporch_byte			=	(lcm_params->dsi.horizontal_frontporch * dsiTmpBufBpp - 12);
-//	horizontal_bllp_byte				=	(lcm_params->dsi.horizontal_bllp * dsiTmpBufBpp);
+	horizontal_bllp_byte				=	(lcm_params->dsi.horizontal_bllp * dsiTmpBufBpp);
 //	ASSERT(lcm_params->dsi.horizontal_frontporch * dsiTmpBufBpp > ((300/dsi_cycle_time) * lcm_params->dsi.LANE_NUM));
 //	horizontal_frontporch_byte -= ((300/dsi_cycle_time) * lcm_params->dsi.LANE_NUM);
 
@@ -1418,7 +1415,7 @@ void DSI_PHY_clk_setting(LCM_PARAMS *lcm_params)
 
 	MASKREG32(MIPI_CONFIG_BASE + 0x60, 0x600, 0x400);
 	
-	if((LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK) && (lcm_params->dsi.PLL_CLOCK <= LCM_DSI_6589_PLL_CLOCK_520)){
+	if((LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK) && (lcm_params->dsi.PLL_CLOCK <= LCM_DSI_6589_PLL_CLOCK_240_5)){
 		unsigned int i = lcm_params->dsi.PLL_CLOCK - 1;
 		printk("LCM PLL Config = %d, %d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", i, pll_config[i].TXDIV0, pll_config[i].TXDIV1, pll_config[i].FBK_SEL, pll_config[i].FBK_DIV,
 		pll_config[i].PRE_DIV, pll_config[i].RG_BR, pll_config[i].RG_BC, pll_config[i].RG_BIR, pll_config[i].RG_BIC, pll_config[i].RG_BP);
@@ -1538,7 +1535,7 @@ void DSI_PHY_TIMCONFIG(LCM_PARAMS *lcm_params)
 	unsigned int ui;
 	unsigned int hs_trail_m, hs_trail_n;
 
-	if((LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK) && (lcm_params->dsi.PLL_CLOCK <= LCM_DSI_6589_PLL_CLOCK_520)){
+	if((LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK) && (lcm_params->dsi.PLL_CLOCK <= LCM_DSI_6589_PLL_CLOCK_240_5)){
 		div1 = pll_config[lcm_params->dsi.PLL_CLOCK - 1].TXDIV0;
 		div2 = pll_config[lcm_params->dsi.PLL_CLOCK - 1].TXDIV1;
 		fbk_sel = pll_config[lcm_params->dsi.PLL_CLOCK - 1].FBK_SEL;
